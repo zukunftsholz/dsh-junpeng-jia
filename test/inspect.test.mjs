@@ -23,16 +23,16 @@ const inspectMod = await hostModule('inspect')
 const githubMod = await hostModule('github')
 const storeMod = await hostModule('store')
 
-const inspect = moduleSuite(inspectMod, 'plugin/lib/host/inspect.js')
-const github = moduleSuite(githubMod, 'plugin/lib/host/github.js')
-const store = moduleSuite(storeMod, 'plugin/lib/host/store.js')
+const inspect = moduleSuite(inspectMod, 'lib/host/inspect.js')
+const github = moduleSuite(githubMod, 'lib/host/github.js')
+const store = moduleSuite(storeMod, 'lib/host/store.js')
 
 const RUNTIME = '0.2.1-rc.2'
 const RUNTIME_RANGE = '>=0.2.0-rc.1 <0.3.0-0'
 
 if (inspectMod.ok) {
-  await test('plugin/lib/host/inspect.js exports the locked surface', async (t) => {
-    await expectExports(t, inspectMod, 'plugin/lib/host/inspect.js', [
+  await test('lib/host/inspect.js exports the locked surface', async (t) => {
+    await expectExports(t, inspectMod, 'lib/host/inspect.js', [
       'inspectBundle',
       'inspectBundleSync',
       'extractInjectSymbols',
@@ -44,8 +44,8 @@ if (inspectMod.ok) {
 }
 
 if (githubMod.ok) {
-  await test('plugin/lib/host/github.js exports the locked surface', async (t) => {
-    await expectExports(t, githubMod, 'plugin/lib/host/github.js', [
+  await test('lib/host/github.js exports the locked surface', async (t) => {
+    await expectExports(t, githubMod, 'lib/host/github.js', [
       'resolveRepo',
       'parseGithubRepo',
       'buildIssue',
@@ -543,7 +543,7 @@ inspect.it('dedupeSignature equals report.dedupe.key (one canonical value)', () 
 
 inspect.it('stable finding codes: the engine only emits codes declared in contract.CODES', async () => {
   const { default: assert2 } = await import('node:assert/strict')
-  const contract = await import('../plugin/lib/contract.js')
+  const contract = await import('../lib/contract.js')
   const known = new Set(Object.values(contract.CODES))
   const reports = [
     inspect.ns.inspectBundleSync(input()),
@@ -669,8 +669,8 @@ inspect.it('inspectBundle tolerates a missing directory and a missing entry file
 // store: dedupe window + history (fs-backed, temp profile dir)
 // ---------------------------------------------------------------------------
 if (storeMod.ok) {
-  await test('plugin/lib/host/store.js exposes the locked surface', async (t) => {
-    await expectExports(t, storeMod, 'plugin/lib/host/store.js', ['createStore', 'signatureOf'])
+  await test('lib/host/store.js exposes the locked surface', async (t) => {
+    await expectExports(t, storeMod, 'lib/host/store.js', ['createStore', 'signatureOf'])
   })
 }
 

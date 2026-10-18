@@ -8,13 +8,13 @@ import assert from 'node:assert/strict'
 import { hostModule, moduleSuite, expectExports, findAbsolutePath, ABSOLUTE_PATH_PATTERNS } from './_helpers.mjs'
 
 const githubMod = await hostModule('github')
-const github = moduleSuite(githubMod, 'plugin/lib/host/github.js')
+const github = moduleSuite(githubMod, 'lib/host/github.js')
 
 const RUNTIME = '0.2.1-rc.2'
 
 if (githubMod.ok) {
-  await test('plugin/lib/host/github.js exports the locked surface', async (t) => {
-    await expectExports(t, githubMod, 'plugin/lib/host/github.js', [
+  await test('lib/host/github.js exports the locked surface', async (t) => {
+    await expectExports(t, githubMod, 'lib/host/github.js', [
       'resolveRepo',
       'parseGithubRepo',
       'buildIssue',

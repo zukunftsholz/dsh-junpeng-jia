@@ -26,17 +26,13 @@
 ## 2. 交付物地图
 
 ```
-docs/
-  BLUEPRINT.md        设计蓝图 + 0.2.1-rc.2 新特性分析 + 官方准入语义
-  API-CONTRACT.md     Host⇄Client 契约（方法、返回、分级表）
-  VERIFY.md           验证计划 + 本次实测结果快照
-  HANDOFF.md          本文档
-plugin/               可安装 bundle（install_bundle 的目标目录）
-  package.json        dsh.bundle.patch / dsh.client / engines.dsh / peerDependencies
+仓库根 = 插件包（可直接按 git 地址安装）
+  package.json        manifest + dsh.bundle.patch / dsh.client / engines.dsh / peerDependencies / repository
   cordis.patch.yml    插入行 id=junpengjia
   locale/{en,zh}.json 显示标题与描述（正式文案，不出现人名）
   icon.svg            64×64 盾牌+气泡
-  README.md           插件级说明（安装、设置、隐私、验证）
+  README.md           安装、设置、隐私、验证、目录说明
+  LICENSE             MIT
   lib/
     index.js          Host 入口：注册服务、agent 工具、plugin-manager/changed 失效
     config.js         Schemastery Config（含 .volatile() 可编辑项）
@@ -49,9 +45,13 @@ plugin/               可安装 bundle（install_bundle 的目标目录）
       github.js       仓库解析、issue 生成、草稿 URL、GitHub API 提交与状态映射
       store.js        状态持久化（原子写、损坏备份、去重、历史、报告缓存）
       service.js      TypertRemoteService（namespace junpengjia，7 个方法）
+docs/
+  BLUEPRINT.md        设计蓝图 + 0.2.1-rc.2 新特性分析 + 官方准入语义
+  API-CONTRACT.md     Host⇄Client 契约（方法、返回、分级表）
+  VERIFY.md           验证计划 + 本次实测结果快照
+  HANDOFF.md          本文档
 scripts/verify.mjs    27 项静态门禁（负向控制已验证会红）
 test/                 193 个 node:test 用例（semver/inspect/github/runtime）
-README.md             项目级说明
 ```
 
 ## 3. 设计要点（改代码前必读）
@@ -175,7 +175,7 @@ junpengjia {action:"nudge", name:"dsh-searxng", mode:"draft"}
 
 11. i18n 仅 zh/en，locale key 无完整性 lint。
 12. 图标无暗色变体（宿主默认图同样没有）。
-13. README（根）与 plugin/README 内容有重叠，可合并去重。
+13. README 已合并为仓库根单一文档（原 plugin/README 内容已并入）。
 
 ## 8. Codex 接手任务清单
 
@@ -200,7 +200,7 @@ junpengjia {action:"nudge", name:"dsh-searxng", mode:"draft"}
 ## 9. 修改守则（不要做）
 
 - 不要用 shell/pnpm 改 profile；只用 `plugin_manager`。
-- 不要在 `plugin/lib/**` 里 import `@deepseek-ai/dsh-client-*`（版本漂移）。
+- 不要在 `lib/**` 里 import `@deepseek-ai/dsh-client-*`（版本漂移）。
 - 不要执行第三方插件代码做探测（只读清单/入口文本/活服务表）。
 - 不要向 session 追加自定义事件类型。
 - 不要让 Remote 方法出现解构/默认值/rest 形参。

@@ -162,9 +162,9 @@ Agent 工具：`junpengjia`，参数 `{ action: 'status'|'check'|'nudge', name?,
 
 | 角色 | 负责 | 写作用域 |
 | --- | --- | --- |
-| Lead | 蓝图、清单、locale/icon、契约、集成、安装验证、最终审查 | `docs/`、`plugin/package.json`、`plugin/cordis.patch.yml`、`plugin/locale/`、`plugin/icon.svg`、`plugin/lib/contract.js` |
-| host-engine | 检测引擎、运行版本解析、semver、GitHub 客户端、去重存储、Remote 服务、Agent 工具 | `plugin/lib/index.js`、`plugin/lib/config.js`、`plugin/lib/host/` |
-| client-ui | badge / section / tab、组件、样式、i18n 绑定 | `plugin/lib/client.js` |
+| Lead | 蓝图、清单、locale/icon、契约、集成、安装验证、最终审查 | `docs/`、`package.json`、`cordis.patch.yml`、`locale/`、`icon.svg`、`lib/contract.js` |
+| host-engine | 检测引擎、运行版本解析、semver、GitHub 客户端、去重存储、Remote 服务、Agent 工具 | `lib/index.js`、`lib/config.js`、`lib/host/` |
+| client-ui | badge / section / tab、组件、样式、i18n 绑定 | `lib/client.js` |
 | qa-verify | 单测、fixture、静态校验脚本、安装验证、README | `test/`、`scripts/`、`README.md` |
 
 验收标准：

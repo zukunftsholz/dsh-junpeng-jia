@@ -12,13 +12,13 @@ import assert from 'node:assert/strict'
 import { hostModule, moduleSuite, expectExports } from './_helpers.mjs'
 
 const mod = await hostModule('semver')
-const semver = moduleSuite(mod, 'plugin/lib/host/semver.js')
+const semver = moduleSuite(mod, 'lib/host/semver.js')
 
 const deps = ['satisfies', 'compare', 'parse', 'validRange']
 
 if (mod.ok) {
-  await test('plugin/lib/host/semver.js exports the locked surface', async (t) => {
-    await expectExports(t, mod, 'plugin/lib/host/semver.js', deps)
+  await test('lib/host/semver.js exports the locked surface', async (t) => {
+    await expectExports(t, mod, 'lib/host/semver.js', deps)
   })
 }
 
@@ -240,10 +240,10 @@ semver.it('satisfies() returns false (never throws) for invalid versions or rang
 })
 
 // ---------------------------------------------------------------------------
-// the ranges this plugin actually ships in plugin/package.json
+// the ranges this plugin actually ships in package.json
 // ---------------------------------------------------------------------------
 test(
-  'plugin/package.json declared ranges accept the observed runtime versions',
+  'package.json declared ranges accept the observed runtime versions',
   { skip: semver.skipReason },
   async () => {
     const { readFileSync } = await import('node:fs')

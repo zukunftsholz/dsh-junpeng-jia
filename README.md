@@ -9,11 +9,14 @@ the DSH version I am running — and does DSH agree?* It only ever asks you to
 file an issue when **both** the plugin's own declarations and DSH's own
 admission check say the plugin is unsupported.
 
-- Host half: `plugin/lib/` — inspection engine, runtime resolution, semver,
+This repository is the installable bundle: the repository root is the package
+root, so the git address can be installed directly.
+
+- Host half: [`lib/`](lib/) — inspection engine, runtime resolution, semver,
   GitHub client, dedupe store, Typert Remote service, agent tool.
-- Client half: `plugin/lib/client.js` — Plugins-page badge, detail section, and
-  a **Compatibility** tab.
-- Bundle patch: `plugin/cordis.patch.yml` (row id `junpengjia`).
+- Client half: [`lib/client.js`](lib/client.js) — Plugins-page badge, detail
+  section, and a **Compatibility** tab.
+- Bundle patch: [`cordis.patch.yml`](cordis.patch.yml) (row id `junpengjia`).
 
 Everything is read-only with respect to the inspected plugins: the engine reads
 manifests, resolves installed versions, and statically scans entry module text.
@@ -29,7 +32,7 @@ Four layers, evaluated per third-party bundle:
 | --- | --- | --- |
 | **L1 manifest** | the bundle's `package.json` | `engines.dsh` or a `@deepseek-ai/dsh*` peer range is unsatisfied; the declared bundle patch is missing; `dsh.client.platform` is not `web` |
 | **L2 resolution** | installed versions in the running runtime | a declared DSH peer dependency cannot be resolved locally |
-| **L3 symbols** | entry module text + the live Cordis service table | a declared `inject` service key does not exist; a `dsh.client.inject` package is absent from the client module graph |
+| **L3 symbols** | entry module text + the live Cordis service table | a declared `inject` service key does not exist; a `dsh.client.external` module is absent from the client module graph |
 | **L4 activation** | Loader facts from `pluginManager` | a row's fiber phase is `failed`, the bundle carries an error, or a row is unaddressable |
 
 L4 findings are evidence, not proof: a disabled plugin is a `warn`, not an
@@ -70,23 +73,28 @@ invalid `engines.dsh` counts as incompatible.
 
 ## Installation
 
-The bundle lives in `plugin/`. Install it into a DSH profile with either:
+Because the repository root is the package root, any of these work:
 
 **From a DSH session (plugin_manager tool):**
 
 ```json
-plugin_manager install_bundle {"target": "C:\\absolute\\path\\to\\dsh-junpeng-jia\\plugin"}
+plugin_manager install_bundle {"target": "https://github.com/zukunftsholz/dsh-junpeng-jia"}
+```
+
+or, for a local checkout:
+
+```json
+plugin_manager install_bundle {"target": "C:\\absolute\\path\\to\\dsh-junpeng-jia"}
 ```
 
 **From a shell:**
 
 ```text
-dsh plugin --profile <profile> add <absolute path to the plugin directory>
+dsh plugin --profile <profile> add https://github.com/zukunftsholz/dsh-junpeng-jia
 ```
 
-Use the **absolute** path to `plugin/` (the directory containing
-`package.json`), not to the repository root. Installing from the repository root
-will fail the bundle check because there is no `package.json` there.
+Use the **absolute** path to the directory containing `package.json`; with this
+layout that is the repository root.
 
 After installing, refresh the Plugins page. The bundle adds:
 
@@ -154,7 +162,7 @@ node --test "test/*.test.mjs"
 
 `scripts/verify.mjs` is a static gate over the shipped bundle: package manifest
 fields and `dsh.bundle.patch` / `dsh.client.platform` wiring, `exports` and
-`files` targets exist, every `plugin/lib/**/*.js` passes `node --check`, the
+`files` targets exist, every `lib/**/*.js` passes `node --check`, the
 `TYPERT_REMOTE` descriptor in `client.js` exposes exactly the seven contract
 methods, the locale dictionaries carry `meta.title`/`meta.description` for both
 languages with matching keys, and `icon.svg` is a well-formed, script-free SVG
@@ -173,28 +181,27 @@ use the quoted glob above (on Node 20/22 either form works).
 ## Layout
 
 ```text
-plugin/                 the installable bundle
-  package.json          manifest + dsh.bundle.patch / dsh.client wiring
-  cordis.patch.yml      inserts the `junpengjia` row
-  icon.svg              theme-neutral SVG icon
-  locale/{en,zh}.json   localized plugin title and description
-  lib/
-    index.js            Host entry: apply(ctx, config)
-    contract.js         shared literals (namespace, methods, codes, defaults)
-    config.js           Schemastery Config
-    client.js           browser half: badge / section / tab
-    host/
-      runtime.js        runtime + installed-version resolution
-      semver.js         zero-dependency range engine (prerelease-aware)
-      inspect.js        four-layer inspection -> Report
-      github.js         repo resolution, issue builder, draft/auto filing
-      store.js          dedupe keys, history, cached reports
-      service.js        TypertRemoteService (namespace `junpengjia`)
-docs/                   blueprint and Host↔Client contract
+package.json            manifest + dsh.bundle.patch / dsh.client wiring
+cordis.patch.yml        inserts the `junpengjia` row
+icon.svg                theme-neutral SVG icon
+locale/{en,zh}.json     localized plugin title and description
+lib/
+  index.js              Host entry: apply(ctx, config)
+  contract.js           shared literals (namespace, methods, codes, defaults)
+  config.js             Schemastery Config
+  client.js             browser half: badge / section / tab
+  host/
+    runtime.js          runtime + installed-version resolution
+    semver.js           zero-dependency range engine (prerelease-aware)
+    inspect.js          four-layer inspection -> Report
+    github.js           repo resolution, issue builder, draft/auto filing
+    store.js            dedupe keys, history, cached reports
+    service.js          TypertRemoteService (namespace `junpengjia`)
+docs/                   blueprint, Host↔Client contract, verification, handoff
 scripts/verify.mjs      static gate
 test/                   node:test suites
 ```
 
 ## License
 
-MIT — see [plugin/LICENSE](plugin/LICENSE).
+MIT — see [LICENSE](LICENSE).

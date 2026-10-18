@@ -43,7 +43,7 @@ node --test "test/*.test.mjs"
 
 ```text
 plugin_manager install_bundle
-  target: C:\dsh_projects\dsh-junpeng-jia\plugin
+  target: C:\dsh_projects\dsh-junpeng-jia
 ```
 
 判定只看返回体：
@@ -55,7 +55,7 @@ plugin_manager install_bundle
 若工具调用被审批策略拒绝，则记录拒绝原文，并给出等价命令：
 
 ```text
-dsh plugin --profile desktop add C:\dsh_projects\dsh-junpeng-jia\plugin
+dsh plugin --profile desktop add C:\dsh_projects\dsh-junpeng-jia
 ```
 
 ## C. 注册验证（免审批、只读）

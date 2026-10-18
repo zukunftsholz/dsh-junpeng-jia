@@ -21,8 +21,8 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 import { spawnSync } from 'node:child_process'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
-const PLUGIN = join(ROOT, 'plugin')
-const LIB = join(PLUGIN, 'lib')
+const PLUGIN = ROOT
+const LIB = join(ROOT, 'lib')
 
 const MAX_ICON_BYTES = 256 * 1024
 
@@ -170,7 +170,7 @@ await check('package.files', () => {
 
 await check('package.files-exist', () => {
   const missing = (pkg.files || []).filter((entry) => !exists(join(PLUGIN, entry)))
-  if (missing.length) fail(`package.files lists entries that do not exist under plugin/: ${missing.join(', ')}`)
+  if (missing.length) fail(`package.files lists entries that do not exist at the package root: ${missing.join(', ')}`)
   return `${pkg.files.length}/${pkg.files.length} entries present`
 })
 
@@ -214,12 +214,12 @@ try {
 }
 
 await check('contract.import', () => {
-  if (!C) fail(`plugin/lib/contract.js could not be imported: ${contractImportError?.message}`)
+  if (!C) fail(`lib/contract.js could not be imported: ${contractImportError?.message}`)
   return `${Object.keys(C).length} named exports`
 })
 
 await check('contract.constants', () => {
-  if (!C) fail('plugin/lib/contract.js could not be imported')
+  if (!C) fail('lib/contract.js could not be imported')
   const expected = {
     PACKAGE: 'dsh-junpeng-jia',
     ROW_ID: 'junpengjia',
@@ -266,11 +266,11 @@ await check('contract.codes-and-layers', () => {
 await check('contract.defaults-vs-config', () => {
   if (!C?.DEFAULTS || typeof C.DEFAULTS !== 'object') fail('contract.DEFAULTS is missing')
   const configPath = join(LIB, 'config.js')
-  if (!exists(configPath)) blocked('plugin/lib/config.js does not exist yet — waiting on host-engine')
+  if (!exists(configPath)) blocked('lib/config.js does not exist yet — waiting on host-engine')
   const text = readFileSync(configPath, 'utf8')
   const missing = Object.keys(C.DEFAULTS).filter((key) => !new RegExp(`\\b${key}\\b`).test(text))
-  if (missing.length) fail(`plugin/lib/config.js does not mention contract.DEFAULTS keys: ${missing.join(', ')}`)
-  if (!/export\s+const\s+Config\b/.test(text)) fail('plugin/lib/config.js must export the Schemastery `Config`')
+  if (missing.length) fail(`lib/config.js does not mention contract.DEFAULTS keys: ${missing.join(', ')}`)
+  if (!/export\s+const\s+Config\b/.test(text)) fail('lib/config.js must export the Schemastery `Config`')
   return `${Object.keys(C.DEFAULTS).length} default keys mirrored in config.js`
 })
 
@@ -341,8 +341,8 @@ await check('host.service-implements-remote-methods', () => {
   const servicePath = join(LIB, 'host', 'service.js')
   const text = readTextOrBlocked(servicePath, 'host-engine')
   const missing = (C?.REMOTE_METHODS || []).filter((method) => !new RegExp(`\\b${method}\\b`).test(text))
-  if (missing.length) fail(`plugin/lib/host/service.js never mentions: ${missing.join(', ')}`)
-  if (!/TypertRemoteService/.test(text)) fail('plugin/lib/host/service.js must use TypertRemoteService')
+  if (missing.length) fail(`lib/host/service.js never mentions: ${missing.join(', ')}`)
+  if (!/TypertRemoteService/.test(text)) fail('lib/host/service.js must use TypertRemoteService')
   return `${C.REMOTE_METHODS.length} methods referenced`
 })
 
@@ -362,7 +362,7 @@ await check('locales.meta', () => {
   const seen = {}
   for (const lang of langs) {
     const file = join(PLUGIN, 'locale', `${lang}.json`)
-    if (!exists(file)) fail(`missing locale file: plugin/locale/${lang}.json`)
+    if (!exists(file)) fail(`missing locale file: locale/${lang}.json`)
     const dict = readJson(file)
     const meta = dict.meta
     if (!meta || typeof meta.title !== 'string' || !meta.title.trim()) fail(`locale ${lang}: meta.title is required`)
@@ -410,30 +410,30 @@ await check('locales.key-parity', () => {
 // ---------------------------------------------------------------------------
 await check('icon.size', () => {
   const file = join(PLUGIN, 'icon.svg')
-  if (!exists(file)) fail('plugin/icon.svg is missing')
+  if (!exists(file)) fail('icon.svg is missing')
   const bytes = statSync(file).size
-  if (bytes === 0) fail('plugin/icon.svg is empty')
-  if (bytes > MAX_ICON_BYTES) fail(`plugin/icon.svg is ${bytes} bytes, over the 256 KiB (${MAX_ICON_BYTES}) limit`)
+  if (bytes === 0) fail('icon.svg is empty')
+  if (bytes > MAX_ICON_BYTES) fail(`icon.svg is ${bytes} bytes, over the 256 KiB (${MAX_ICON_BYTES}) limit`)
   return `${bytes} bytes`
 })
 
 await check('icon.well-formed-svg', () => {
   const file = join(PLUGIN, 'icon.svg')
-  if (!exists(file)) fail('plugin/icon.svg is missing')
+  if (!exists(file)) fail('icon.svg is missing')
   const text = readFileSync(file, 'utf8')
   const parsed = parseXml(text)
-  if (!parsed.ok) fail(`plugin/icon.svg is not well-formed XML: ${parsed.error}`)
-  if (parsed.root !== 'svg') fail(`plugin/icon.svg root element must be <svg>, found <${parsed.root}>`)
+  if (!parsed.ok) fail(`icon.svg is not well-formed XML: ${parsed.error}`)
+  if (parsed.root !== 'svg') fail(`icon.svg root element must be <svg>, found <${parsed.root}>`)
   if (!/\sxmlns\s*=\s*["']http:\/\/www\.w3\.org\/2000\/svg["']/.test(text)) {
-    fail('plugin/icon.svg must declare xmlns="http://www.w3.org/2000/svg"')
+    fail('icon.svg must declare xmlns="http://www.w3.org/2000/svg"')
   }
   if (!/\sviewBox\s*=/.test(text) && !(/\swidth\s*=/.test(text) && /\sheight\s*=/.test(text))) {
-    fail('plugin/icon.svg must carry a viewBox (or width+height)')
+    fail('icon.svg must carry a viewBox (or width+height)')
   }
-  if (/<script\b/i.test(text)) fail('plugin/icon.svg must not contain <script>')
-  if (/\son[a-z]+\s*=/i.test(text)) fail('plugin/icon.svg must not contain inline event handlers')
+  if (/<script\b/i.test(text)) fail('icon.svg must not contain <script>')
+  if (/\son[a-z]+\s*=/i.test(text)) fail('icon.svg must not contain inline event handlers')
   if (/(?:href|xlink:href)\s*=\s*["'](?:https?:)?\/\//i.test(text)) {
-    fail('plugin/icon.svg must not reference external resources (offline-safe icon)')
+    fail('icon.svg must not reference external resources (offline-safe icon)')
   }
   return `${parsed.elements} elements, root <svg>`
 })

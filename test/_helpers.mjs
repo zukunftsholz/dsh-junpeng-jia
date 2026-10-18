@@ -14,8 +14,9 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 import test from 'node:test'
 
 export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
-export const PLUGIN_DIR = join(ROOT, 'plugin')
-export const LIB_DIR = join(PLUGIN_DIR, 'lib')
+// The repository root IS the package root, so the shipped code lives in ./lib.
+export const PLUGIN_DIR = ROOT
+export const LIB_DIR = join(ROOT, 'lib')
 export const HOST_DIR = join(LIB_DIR, 'host')
 
 /** Format any thrown value into a one-line reason. */
@@ -40,7 +41,7 @@ export async function hostModule(name) {
   return tryImport(join(HOST_DIR, `${name}.js`))
 }
 
-/** Import a file from plugin/lib by relative path, e.g. `libModule('contract.js')`. */
+/** Import a file from lib/ by relative path, e.g. `libModule('contract.js')`. */
 export async function libModule(relative) {
   return tryImport(join(LIB_DIR, relative))
 }
@@ -48,7 +49,7 @@ export async function libModule(relative) {
 /**
  * Build a test facade for a module that may not exist yet.
  *
- *   const suite = moduleSuite(mod, 'plugin/lib/host/semver.js')
+ *   const suite = moduleSuite(mod, 'lib/host/semver.js')
  *   suite.it('...', () => { ... suite.ns.satisfies ... })
  *
  * When the module is missing, `it` registers a SKIPPED test whose name carries

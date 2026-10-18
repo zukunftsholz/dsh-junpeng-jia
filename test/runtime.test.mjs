@@ -18,7 +18,7 @@ import { join } from 'node:path'
 import { hostModule, moduleSuite, expectExports } from './_helpers.mjs'
 
 const mod = await hostModule('runtime')
-const runtime = moduleSuite(mod, 'plugin/lib/host/runtime.js')
+const runtime = moduleSuite(mod, 'lib/host/runtime.js')
 
 const CONTRACT_SOURCES = ['env', 'resolve', 'asar', 'config', 'unknown']
 
@@ -53,8 +53,8 @@ async function fixturePackages(packages) {
 }
 
 if (mod.ok) {
-  await test('plugin/lib/host/runtime.js exports the locked surface', async (t) => {
-    await expectExports(t, mod, 'plugin/lib/host/runtime.js', [
+  await test('lib/host/runtime.js exports the locked surface', async (t) => {
+    await expectExports(t, mod, 'lib/host/runtime.js', [
       'resolveRuntimeVersion',
       'resolveInstalledVersion',
     ])
