@@ -1,0 +1,11 @@
+# dsh-junpeng-jia bundle patch.
+#
+# The row id is deliberately different from the package name: the Plugins page
+# renders a row's id and its module name as two separate technical identifiers,
+# and the ecosystem convention keeps them distinct (dsh-zgit: zgit/dsh-zgit).
+# The client half derives its `plugins.row.config` key from `<package>#<row id>`
+# if one is ever added, so changing this id requires changing that key too.
+- insert:
+    - id: junpengjia
+      name: 'dsh-junpeng-jia'
+      config: {}

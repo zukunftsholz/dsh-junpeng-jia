@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Compatibility & Update Watch",
+    "description": "Deep-checks every third-party plugin against the running DSH version and files a graded GitHub update request when both the plugin and the runtime agree it is unsupported."
+  }
+}
