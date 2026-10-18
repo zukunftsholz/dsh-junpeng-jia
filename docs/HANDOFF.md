@@ -7,6 +7,17 @@
 
 一个零构建的 DSH 插件（Host + Client 两半），在 Plugins 页为第三方插件提供「深度兼容性检测」与「分级催更（GitHub issue 草稿/自动提交）」。代码、契约、测试、验证文档齐备；剩余工作集中在**视觉验收、真实 GitHub 端到端、若干健壮性加固**。
 
+## 0.1 发布信息（已推送）
+
+| 项 | 值 |
+| --- | --- |
+| 仓库 | https://github.com/zukunftsholz/dsh-junpeng-jia |
+| 分支 | `main`（commit `1afb0d2`） |
+| Tag | `v0.1.0`（annotated，指向同一提交） |
+| 仓库布局 | **仓库根 = 插件包**（`package.json` 在根目录） |
+| 安装（git） | `plugin_manager install_bundle {"target": "https://github.com/zukunftsholz/dsh-junpeng-jia"}` |
+| 本地安装 | 已从仓库根重装并验证（`application: applied`），插件自报 repo `zukunftsholz/dsh-junpeng-jia` 且为 green |
+| 打包产物 | `npm pack` 17 文件 / 59.7 kB（未上传 Release，按用户要求只推代码与 tag） |
 ## 1. 环境与运行时事实
 
 | 事实 | 值 |
